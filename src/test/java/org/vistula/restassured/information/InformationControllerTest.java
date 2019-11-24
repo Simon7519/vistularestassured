@@ -21,6 +21,7 @@ public class InformationControllerTest extends RestAssuredTest {
                 .log().all()
                 .statusCode(200)
                 .body("size()", is(2));
+
     }
 
 
