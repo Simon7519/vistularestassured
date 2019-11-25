@@ -28,8 +28,6 @@ public class PetPostGetScenarioTest extends RestAssuredTest{
         requestParams.put("id", value);
         String randomName = RandomStringUtils.randomAlphabetic(10);
         requestParams.put("name", randomName);
-
-
         createNewPet(requestParams);
         getPet(value, randomName, "/pet/" + value);
         deletePet(value);

@@ -8,6 +8,7 @@ import org.vistula.restassured.RestAssuredTest;
 
 import static io.restassured.RestAssured.given;
 import static io.restassured.RestAssured.sessionId;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.Matchers.greaterThan;
@@ -25,8 +26,10 @@ public class InformationControllerTest extends RestAssuredTest {
     }
 
 
-    @Test
-    public void shouldCreateNewPlayer() {
+
+
+    @Test //PUT
+    public void shouldCreateNewPlayerRL() {
         JSONObject requestParams = new JSONObject();
 
 
@@ -36,7 +39,7 @@ public class InformationControllerTest extends RestAssuredTest {
         int salary  = 1000;
         requestParams.put("nationality", myNationality);
         requestParams.put("salary", salary);
-        given().header("Content-Type", "application/json")
+         given().header("Content-Type", "application/json")
                 .body(requestParams.toString())
                 .post("/information")
                 .then()
@@ -46,6 +49,10 @@ public class InformationControllerTest extends RestAssuredTest {
                 .body("name", equalTo(playerName))
                 .body("salary", is(salary))
                 .body("nationality", equalTo(myNationality));
+
+
+
+
 
         //given().delete("/information/" + id)
           //      .then()
