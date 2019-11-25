@@ -20,6 +20,7 @@ import static org.hamcrest.CoreMatchers.is;
 
 public class InformationControllerHomework extends RestAssuredTest {
 
+
     @Test
     public void newPlayer() {
 
