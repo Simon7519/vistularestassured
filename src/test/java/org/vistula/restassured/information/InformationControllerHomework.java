@@ -1,5 +1,6 @@
 package org.vistula.restassured.information;
 
+import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.json.JSONObject;
@@ -25,7 +26,7 @@ public class InformationControllerHomework extends RestAssuredTest {
     public void newPlayer() {
 
         JSONObject requestParams = new JSONObject();
-        String myName = RandomStringUtils.randomAlphabetic(10);
+        String myName = RandomStringUtils.randomAlphabetic(20);
         String natPol = "Polish";
         int salrPol = 500;
 
@@ -44,6 +45,7 @@ public class InformationControllerHomework extends RestAssuredTest {
                 .body("name", equalTo(myName))
                 .extract().jsonPath().getLong("id");
 
+
         JSONObject requestParams1 = new JSONObject();
         String natSwe = "Swedish";
         requestParams1.put("nationality", natSwe);
@@ -56,7 +58,7 @@ public class InformationControllerHomework extends RestAssuredTest {
                 .put("/information/" + id)
                 .then()
                 .log().all()
-                .statusCode(200)
+                .statusCode(200).assertThat()
                 .body("nationality", equalTo("Swedish"))
                 .body("salary", equalTo(500))
                 .body("name", equalTo(myName));
@@ -67,35 +69,42 @@ public class InformationControllerHomework extends RestAssuredTest {
         JSONObject requestParams2 = new JSONObject();
         requestParams2.put("salary", 1000);
 
-        given().header("Content-Type", "application/json")
+        int sal = given().header("Content-Type", "application/json")
                 .body(requestParams2.toString())
                 .patch("/information/" + id)
                 .then()
                 .log().all()
-                .statusCode(200)
-                .body("salary", is(1000));
+                .statusCode(200).assertThat()
+                .body("salary", is(1000))
+                .extract().jsonPath().getInt("salary");
 
-        assertThat(1000).isEqualTo(1000);
+        assertThat(sal).isEqualTo(1000);
 
         JSONObject requestParams3 = new JSONObject();
         requestParams3.put("salary", 2000);
         requestParams3.put("nationality", "German");
 
+        PatchSalNat(id, requestParams3);
+
+        Delete(id);
+    }
+
+    private void PatchSalNat(long id, JSONObject requestParams3) {
         given().header("Content-Type", "application/json")
-                .body(requestParams3.toString())
-                .patch("/information/" + id)
-                .then()
-                .log().all()
-                .statusCode(200)
-                .body("salary", is(2000))
-                .body("nationality", equalTo("German"));
+               .body(requestParams3.toString())
+               .patch("/information/" + id)
+               .then()
+               .log().all()
+               .statusCode(200).assertThat()
+               .body("salary", is(2000))
+               .body("nationality", equalTo("German"))
+               .extract().path("nationality", "salary");
+    }
 
-        assertThat(2000).isEqualTo(2000);
-        assertThat("German").isEqualTo("German");
-
+    private void Delete(long id) {
         given().delete("/information/" + id)
                 .then()
                 .log().all()
-                .statusCode(204);
+                .statusCode(204).assertThat();
     }
 }
